@@ -1,0 +1,63 @@
+﻿<div class="row" ng-controller="createCtrl">
+    <div class="col">
+        <h3>Add Book</h3>
+        <div class="alert alert-success alert-dismissible fade show" role="alert" ng-show="modalErr">
+            {{modalErr}}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <form name="fadd">
+            <div class="form-group row mb-1">
+                <label class="col-form-label col-2 text-end">BookName</label>
+                <div class="col-4">
+                    <input name="BookName" ng-model="booknew.BookName" ng-required="true" ng-maxlength="40" class="form-control" />
+                    <div class="text-danger" ng-show="!fadd.BookName.$pristine && fadd.BookName.$error.required">BookName is required</div>
+                    <div class="text-danger" ng-show="!fadd.BookName.$pristine && fadd.BookName.$error.maxlength">BookName can be maximun 40 cahracters in length.</div>
+                </div>
+
+            </div>
+            <div class="form-group row mb-1">
+                <label class="col-form-label col-2 text-end">AuthorName</label>
+                <div class="col-4">
+                    <input name="AuthorName" ng-model="booknew.AuthorName" ng-required="true" ng-maxlength="40" class="form-control" />
+                    <div class="text-danger" ng-show="!fadd.AuthorName.$pristine && fadd.AuthorName.$error.required">AuthorName is required</div>
+                    <div class="text-danger" ng-show="!fadd.AuthorName.$pristine && fadd.AuthorName.$error.maxlength">AuthorName can be maximun 40 cahracters in length.</div>
+                </div>
+
+            </div>
+            <div class="form-group row mb-1">
+                <label class="col-form-label col-2 text-end">PublishDate</label>
+                <div class="col-4">
+                    <datepicker date-format="yyyy-MM-dd">
+                        <input name="PublishDate" ng-model="booknew.PublishDate" required class="form-control" />
+                    </datepicker>
+                    <div class="text-danger" ng-show="!fadd.PublishDate.$pristine && fadd.applydate.$error.required">PublishDate is required</div>
+
+                </div>
+
+            </div>
+            <div class="form-group row mb-1">
+                <label class="col-form-label col-2 text-end">Picture</label>
+                <div class="col-4">
+                    <input type="file" name="picture" ng-model="booknew.Picture" class="form-control" accept="image/*" required base-sixty-four-input />
+                    <div class="text-danger" ng-show="!fadd.picture.$pristine && fadd.picture.$error.required">Picture is required</div>
+
+                </div>
+
+            </div>
+            <div class="form-group row mb-1">
+
+                <div class="col-10 offset-2">
+                    <button type="button" class="btn btn-success" ng-disabled="fadd.$invalid" ng-click="insert(fadd)">Save to database</button>
+
+                </div>
+
+            </div>
+        </form>
+
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <a href="#!/books">Back to Books list</a>
+        </div>
+    </div>
+</div>

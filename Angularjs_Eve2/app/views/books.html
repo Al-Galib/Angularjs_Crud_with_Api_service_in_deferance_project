@@ -1,0 +1,38 @@
+﻿<div class="row">
+    <div class="col">
+        <h3>Books List</h3>
+        <div class="d-flex justify-content-end mb-1">
+            <a href="#!/create" class="btn btn-primary btn-sm">Create</a>
+        </div>
+        <table class="table table-bordered table-striped">
+            <thead class="table-light">
+                <tr>
+                    <th></th>
+                    <th>BookName</th>
+                    <th>Author</th>
+                    <th>PublishDate</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="a in model.books">
+                    <td><img class="img-thumbnail" width="40" ng-src="{{url}}/Images/{{a.Picture}}" /></td>
+                    <td>{{a.BookName}}</td>
+                    <td>{{a.AuthorName}}</td>
+                    <td>{{a.PublishDate | date:'yyyy-MM-dd'}}</td>
+                    <td>
+                        <a href="#!/edit/{{a.Id}}" class="btn btn-primary btn-sm">Edit</a>
+                        <button type="button" class="btn btn-danger btn-sm" ng-click="confirmDelete(a)">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="5" class="text-end">
+                        <ngc-summary datasource="model.books"></ngc-summary>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>

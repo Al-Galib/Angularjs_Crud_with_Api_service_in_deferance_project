@@ -1,0 +1,140 @@
+﻿<!DOCTYPE html>
+<html ng-app="bookApp">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <script src="~/Scripts/bootstrap.bundle.js"></script>
+    <style>
+        body {
+            padding-top: 70px;
+            width: calc(100vw - 50px);
+            margin: 0 auto;
+        }
+
+        .main {
+            min-height: calc(100vh - 120px );
+        }
+    </style>
+    <link href="~/Content/fileupload/angular-datepicker.css" rel="stylesheet" />
+</head>
+<body ng-controller="mainCtrl">
+    <nav class="navbar navbar-light bg-light navbar-expand-md fixed-top shadow-sm">
+        <div class="container-fluid">
+
+            <span class="navbar-brand">Evedance</span>
+
+            <div class="navbar-collapse collapse">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" href="#!/">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#!/books">Books</a></li>
+                </ul>
+
+            </div>
+        </div>
+    </nav>
+    <div class="conainer-fluid main">
+        @RenderBody()
+    </div>
+    <div class="container-fluid">
+        <p>Footer</p>
+    </div>
+    <div class="modal" tabindex="-1" id="delmodal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirm?</h5>
+
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure to delete.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" ng-click="cancelDelete()">Close</button>
+                    <button type="button" class="btn btn-danger" ng-click="doDelete()">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="~/Scripts/angular.js"></script>
+    <script src="~/Scripts/angular-route.js"></script>
+    <script src="~/Scripts/base64/angular-base64-upload.js"></script>
+    <script src="~/Content/fileupload/angular-datepicker.js"></script>
+    <script>
+        angular.module("bookApp", ['ngRoute', 'naif.base64', '720kb.datepicker'])
+            .constant('apiUrl', "http://localhost:62556/")
+            .constant('createUrl', "http://localhost:62556/api/Create")
+            .constant('editUrl', "http://localhost:62556/api/Edit")
+            .constant('deleteUrl', "http://localhost:62556/api/books")
+            .config($routeProvider => {
+                $routeProvider
+                    .when("/", {
+                        templateUrl: "/app/views/home.html"
+                    })
+                    .when("/books", {
+                        templateUrl: "/app/views/books.html"
+                    })
+                    .when("/create", {
+                        templateUrl: "/app/views/add.html"
+                    })
+                    .when("/edit/:id", {
+                        templateUrl: "/app/views/edit.html"
+                    })
+                    .otherwise("/")
+            })
+            .directive('ngcSummary', () => {
+                return {
+                    restrict: 'E',
+                    scope: {
+                        datasource: "="
+                    },
+                    template: `<div>
+
+                                Total books: {{datasource.length}} in Book list.
+                            </div>`
+                }
+            })
+            .controller('mainCtrl', ($scope, apiUrl, deleteUrl, apiSvc) => {
+                $scope.model = {};
+                $scope.modalErr = "";
+                $scope.currenObj = null;
+
+                //global vars
+                $scope.url = apiUrl;
+                $scope.modal = new bootstrap.Modal(document.getElementById('delmodal'));
+                console.log($scope.modal)
+                apiSvc.get(`${apiUrl}api/Books`)
+                    .then(r => {
+                        $scope.model.books = r.data;
+                    }, err => {
+                        console.log(err);
+                    });
+                $scope.confirmDelete = obj => {
+                    $scope.currenObj = obj;
+                    $scope.modal.show();
+                }
+                $scope.cancelDelete = () => {
+                    $scope.currenObj = null;
+                    $scope.modal.hide();
+                }
+                $scope.doDelete = () => {
+                    apiSvc.delete(`${deleteUrl}/${$scope.currenObj.Id}`)
+                        .then(r => {
+                            var i = $scope.model.books.findIndex(a => a.Id == $scope.currenObj.Id);
+                            $scope.model.books.splice(i, 1);
+                           
+                            $scope.currenObj = null;
+                            $scope.modal.hide();
+                        }, err => {
+                          
+                        });
+                }
+            });
+    </script>
+    <script src="~/app/services/apiSvc.js"></script>
+    <script src="~/app/controllers/createCtrl.js"></script>
+    <script src="~/app/controllers/editCtrl.js"></script>
+</body>
+</html>
